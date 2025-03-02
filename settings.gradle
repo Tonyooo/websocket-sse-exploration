@@ -1,4 +1,4 @@
-rootProject.name = 'websocket-sandbox'
+rootProject.name = 'websocket-sse-exploration'
 
 include '1-basic-websocket-broadcast'
 include '2-basic-websocket-unicast'
