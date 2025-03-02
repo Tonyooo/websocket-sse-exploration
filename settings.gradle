@@ -1,0 +1,6 @@
+rootProject.name = 'websocket-sandbox'
+
+include '1-basic-websocket-broadcast'
+include '2-basic-websocket-unicast'
+include '3-redis-pubsub'
+include '4-sse'

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic Form with Fetch</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        form {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        input, textarea, button {
+            margin-bottom: 10px;
+            padding: 8px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            background: #f4f4f4;
+            margin: 5px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+    </style>
+</head>
+<body>
+<h1>Message Sender</h1>
+<form id="messageForm">
+    <label for="userId">User ID (UUID format):</label>
+    <input type="text" id="userId" name="userId" required placeholder="Enter UUID">
+
+    <label for="message">Message:</label>
+    <textarea id="message" name="message" required placeholder="Enter your message"></textarea>
+
+    <button type="submit">Send</button>
+</form>
+<ul id="messageList"></ul>
+
+<script>
+    const form = document.getElementById('messageForm');
+    const messageList = document.getElementById('messageList');
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault(); // Prevent the form from submitting the traditional way
+
+        const userId = document.getElementById('userId').value;
+        const message = document.getElementById('message').value;
+
+        // Define the payload
+        const payload = {
+            userId: userId,
+            message: message
+        };
+
+        try {
+            // Send data using fetch
+            const response = await fetch('http://localhost:8080/internal-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Add the sent message to the list
+            const listItem = document.createElement('li');
+            listItem.textContent = `Message '${message}' sent to user '${userId}'`;
+            messageList.appendChild(listItem);
+
+            // Clear the form fields
+            form.reset();
+        } catch (error) {
+            console.error('Error sending message:', error);
+            alert('Failed to send message. Please try again.');
+        }
+    });
+</script>
+</body>
+</html>

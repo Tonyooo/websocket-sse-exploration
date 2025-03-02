@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SSE - Unicast</title>
+    <script>
+        function appendSseEvent(content) {
+            var messageText = document.createTextNode(content);
+            var textElement = document.createElement('p');
+            textElement.appendChild(messageText);
+            var liElement = document.createElement('li');
+            liElement.appendChild(textElement);
+            var eventsList = document.querySelector('#sse-events');
+            eventsList.appendChild(liElement);
+        }
+
+        // User id
+        var crypto = window.crypto;
+        var userId = crypto.randomUUID();
+
+        // Connect
+        var host = location.host;
+        var sse = new EventSource(`http://${host}/events?userId=${userId}`);
+
+        // Callbacks
+        sse.onmessage = message => {
+            appendSseEvent(`Message received: ${message.data}`);
+        }
+        sse.onerror = message => {
+            appendSseEvent("Protocol: SSE connection error");
+        }
+    </script>
+</head>
+<body>
+<h3>SSE events:</h3>
+<div>
+    <ul id="sse-events">
+
+    </ul>
+</div>
+</body>
+</html>

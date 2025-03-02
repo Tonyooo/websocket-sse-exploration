@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>POC 1 - Basic websocket - Broadcast</title>
+    <script>
+        function appendWsEvent(content) {
+            var messageText = document.createTextNode(content);
+            var textElement = document.createElement('p');
+            textElement.appendChild(messageText);
+            var liElement = document.createElement('li');
+            liElement.appendChild(textElement);
+            var eventsList = document.querySelector('#ws-events');
+            eventsList.appendChild(liElement);
+        }
+
+        // Connect
+        var ws = new WebSocket("ws://localhost:8080/websocket-init-unicast");
+
+        // Callbacks
+        ws.onopen = (event) => {
+          let crypto = window.crypto;
+          let userId = crypto.randomUUID();
+          appendWsEvent("Protocol: WebSocket connection initialized with user id " + userId);
+          ws.send(`{ "userId": "${userId}" }`);
+        };
+        ws.onmessage = message => {
+            appendWsEvent(`Message received: ${message.data}`);
+        }
+        ws.onclose = message => {
+            appendWsEvent("Protocol: WebSocket connection closed");
+        }
+    </script>
+</head>
+<body>
+<h3>WebSocket events:</h3>
+<div>
+    <ul id="ws-events">
+
+    </ul>
+</div>
+</body>
+</html>
